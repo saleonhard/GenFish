@@ -1,0 +1,82 @@
+{"bubbles": [
+  {
+    "diameter": 61.14072,
+    "position": {
+      "x": 273,
+      "y": 235
+    },
+    "label": "Joyous"
+  },
+  {
+    "diameter": 44.758068,
+    "position": {
+      "x": 121,
+      "y": 179
+    },
+    "label": "Melancholy"
+  },
+  {
+    "diameter": 65.40049743652344,
+    "position": {
+      "x": 508,
+      "y": 216
+    },
+    "label": "New label"
+  },
+  {
+    "diameter": 73.71827697753906,
+    "position": {
+      "x": 504,
+      "y": 234
+    },
+    "label": "New label"
+  },
+  {
+    "diameter": 74.85929870605469,
+    "position": {
+      "x": 484,
+      "y": 288
+    },
+    "label": "New label"
+  },
+  {
+    "diameter": 70.056396484375,
+    "position": {
+      "x": 330,
+      "y": 145
+    },
+    "label": "New label"
+  },
+  {
+    "diameter": 66.89949798583984,
+    "position": {
+      "x": 396,
+      "y": 54
+    },
+    "label": "New label"
+  },
+  {
+    "diameter": 58.27247619628906,
+    "position": {
+      "x": 254,
+      "y": 75
+    },
+    "label": "New label"
+  },
+  {
+    "diameter": 56.90834426879883,
+    "position": {
+      "x": 187,
+      "y": 174
+    },
+    "label": "New label"
+  },
+  {
+    "diameter": 75.24162292480469,
+    "position": {
+      "x": 162,
+      "y": 250
+    },
+    "label": "New label"
+  }
+]}
