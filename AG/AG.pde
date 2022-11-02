@@ -14,6 +14,9 @@
  */
  
 import java.util.Random;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 
 class AlgGenetico {
 
@@ -22,6 +25,8 @@ class AlgGenetico {
   private double taxaDeMutacao;
   private int nMaxGeracoes;
   boolean elitismo = false;
+  
+
   
   
   AlgGenetico(){
@@ -158,19 +163,33 @@ class AlgGenetico {
     return novaPopulacao;
   }
 
-
-  Double fitness(Fish fish, int r, int g, int b) {
-    Float   aR  = calAptidao(fish.getR(), r);
-    Float   aG  = calAptidao(fish.getG(), g);
-    Float   aB  = calAptidao(fish.getB(), b);
+ 
+  //Double fitness(Fish fish, int r, int g, int b) {
+  //  Float   aR  = calAptidao(fish.getR(), r);
+  //  Float   aG  = calAptidao(fish.getG(), g);
+  //  Float   aB  = calAptidao(fish.getB(), b);
     
-    Float   aRB  = calAptidao(fish.getRB(), r);
-    Float   aGB  = calAptidao(fish.getGB(), g);
-    Float   aBB  = calAptidao(fish.getBB(), b);
+  //  Float   aRB  = calAptidao(fish.getRB(), r);
+  //  Float   aGB  = calAptidao(fish.getGB(), g);
+  //  Float   aBB  = calAptidao(fish.getBB(), b);
 
-    Double fit = ajusteAp(fish, aR, aG, aB, 0) + ajusteAp(fish, aRB, aGB, aBB, 0);
+  //  Double fit = ajusteAp(fish, aR, aG, aB, 0) + ajusteAp(fish, aRB, aGB, aBB, 0);
 
-    return Math.ceil(fit/2);
+  //  return Math.ceil(fit/2);
+  //}
+  
+  Double fitness(Fish fish, int r, int g, int b) {
+    
+    double labC[] = rgbToLab(fish.getR(), fish.getG(),fish.getB()); 
+    double labB[] = rgbToLab(fish.getRB(), fish.getGB(),fish.getBB()); 
+    double labA[] = rgbToLab(r,g,b); 
+    
+    BigDecimal resultCorpo = new BigDecimal(calculateDeltaE(labC[0], labC[1], labC[2], labA[0], labA[1], labA[2])).setScale(4, RoundingMode.HALF_EVEN);
+    BigDecimal resultBarba = new BigDecimal(calculateDeltaE(labB[0], labB[1], labB[2], labA[0], labA[1], labA[2])).setScale(4, RoundingMode.HALF_EVEN);
+
+    BigDecimal fit  = new BigDecimal((Math.abs(resultCorpo.doubleValue() - 100) + Math.abs(resultBarba.doubleValue() - 100))/2).setScale(2, RoundingMode.HALF_EVEN);
+    
+    return fit.doubleValue();
   }
 
   Double ajusteAp( Fish fish, float aR, float aG, float aB, int cont) {
@@ -221,6 +240,127 @@ class AlgGenetico {
 
     return apt;
   }
+  
+  // Calcula a distancia entre duas cores
+  public double calculateDeltaE(double L1, double a1, double b1, double L2, double a2, double b2) {
+    double Lmean = (L1 + L2) / 2.0; //ok
+    double C1 =  Math.sqrt(a1*a1 + b1*b1); //ok
+    double C2 =  Math.sqrt(a2*a2 + b2*b2); //ok
+    double Cmean = (C1 + C2) / 2.0; //ok
+    
+    double G =  ( 1 - Math.sqrt( Math.pow(Cmean, 7) / (Math.pow(Cmean, 7) + Math.pow(25, 7)) ) ) / 2; //ok
+    double a1prime = a1 * (1 + G); //ok
+    double a2prime = a2 * (1 + G); //ok
+    
+    double C1prime =  Math.sqrt(a1prime*a1prime + b1*b1); //ok
+    double C2prime =  Math.sqrt(a2prime*a2prime + b2*b2); //ok
+    double Cmeanprime = (C1prime + C2prime) / 2; //ok 
+    
+    double h1prime =  Math.atan2(b1, a1prime) + 2*Math.PI * (Math.atan2(b1, a1prime)<0 ? 1 : 0);
+    double h2prime =  Math.atan2(b2, a2prime) + 2*Math.PI * (Math.atan2(b2, a2prime)<0 ? 1 : 0);
+    double Hmeanprime =  ((Math.abs(h1prime - h2prime) > Math.PI) ? (h1prime + h2prime + 2*Math.PI) / 2 : (h1prime + h2prime) / 2); //ok
+    
+    double T =  1.0 - 0.17 * Math.cos(Hmeanprime - Math.PI/6.0) + 0.24 * Math.cos(2*Hmeanprime) + 0.32 * Math.cos(3*Hmeanprime + Math.PI/30) - 0.2 * Math.cos(4*Hmeanprime - 21*Math.PI/60); //ok
+    
+    double deltahprime =  ((Math.abs(h1prime - h2prime) <= Math.PI) ? h2prime - h1prime : (h2prime <= h1prime) ? h2prime - h1prime + 2*Math.PI : h2prime - h1prime - 2*Math.PI); //ok
+    
+    double deltaLprime = L2 - L1; //ok
+    double deltaCprime = C2prime - C1prime; //ok
+    double deltaHprime =  2.0 * Math.sqrt(C1prime*C2prime) * Math.sin(deltahprime / 2.0); //ok
+    double SL =  1.0 + ( (0.015*(Lmean - 50)*(Lmean - 50)) / (Math.sqrt( 20 + (Lmean - 50)*(Lmean - 50) )) ); //ok
+    double SC =  1.0 + 0.045 * Cmeanprime; //ok
+    double SH =  1.0 + 0.015 * Cmeanprime * T; //ok
+    
+    double deltaTheta =  (30 * Math.PI / 180) * Math.exp(-((180/Math.PI*Hmeanprime-275)/25)*((180/Math.PI*Hmeanprime-275)/25));
+    double RC =  (2 * Math.sqrt(Math.pow(Cmeanprime, 7) / (Math.pow(Cmeanprime, 7) + Math.pow(25, 7))));
+    double RT =  (-RC * Math.sin(2 * deltaTheta));
+    
+    double KL = 1;
+    double KC = 1;
+    double KH = 1;
+    
+    double deltaE = Math.sqrt(
+        ((deltaLprime/(KL*SL)) * (deltaLprime/(KL*SL))) +
+        ((deltaCprime/(KC*SC)) * (deltaCprime/(KC*SC))) +
+        ((deltaHprime/(KH*SH)) * (deltaHprime/(KH*SH))) +
+        (RT * (deltaCprime/(KC*SC)) * (deltaHprime/(KH*SH)))
+        );
+      
+    return deltaE;
+  }
+  
+  // Converte de RGB para LAB
+  public  double[] rgbToLab(int R, int G, int B) {
+
+    double r, g, b, X, Y, Z, xr, yr, zr;
+
+    // D65/2°
+    double Xr = 95.047;  
+    double Yr = 100.0;
+    double Zr = 108.883;
+
+
+    // --------- RGB to XYZ ---------//
+
+    r = R/255.0;
+    g = G/255.0;
+    b = B/255.0;
+
+    if (r > 0.04045)
+        r = Math.pow((r+0.055)/1.055,2.4);
+    else
+        r = r/12.92;
+
+    if (g > 0.04045)
+        g = Math.pow((g+0.055)/1.055,2.4);
+    else
+        g = g/12.92;
+
+    if (b > 0.04045)
+        b = Math.pow((b+0.055)/1.055,2.4);
+    else
+        b = b/12.92 ;
+
+    r*=100;
+    g*=100;
+    b*=100;
+
+    X =  0.4124*r + 0.3576*g + 0.1805*b;
+    Y =  0.2126*r + 0.7152*g + 0.0722*b;
+    Z =  0.0193*r + 0.1192*g + 0.9505*b;
+
+
+    // --------- XYZ to Lab --------- //
+
+    xr = X/Xr;
+    yr = Y/Yr;
+    zr = Z/Zr;
+
+    if ( xr > 0.008856 )
+        xr =  (float) Math.pow(xr, 1/3.);
+    else
+        xr = (float) ((7.787 * xr) + 16 / 116.0);
+
+    if ( yr > 0.008856 )
+        yr =  (float) Math.pow(yr, 1/3.);
+    else
+        yr = (float) ((7.787 * yr) + 16 / 116.0);
+
+    if ( zr > 0.008856 )
+        zr =  (float) Math.pow(zr, 1/3.);
+    else
+        zr = (float) ((7.787 * zr) + 16 / 116.0);
+
+
+    double[] lab = new double[3];
+
+    lab[0] = (116*yr)-16;
+    lab[1] = 500*(xr-yr); 
+    lab[2] = 200*(yr-zr); 
+
+    return lab;
+
+ } 
 
   ArrayList <Fish>  roleta() {
 
