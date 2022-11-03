@@ -187,7 +187,7 @@ class AlgGenetico {
     BigDecimal resultCorpo = new BigDecimal(calculateDeltaE(labC[0], labC[1], labC[2], labA[0], labA[1], labA[2])).setScale(4, RoundingMode.HALF_EVEN);
     BigDecimal resultBarba = new BigDecimal(calculateDeltaE(labB[0], labB[1], labB[2], labA[0], labA[1], labA[2])).setScale(4, RoundingMode.HALF_EVEN);
 
-    BigDecimal fit  = new BigDecimal((Math.abs(resultCorpo.doubleValue() - 100) + Math.abs(resultBarba.doubleValue() - 100))/2).setScale(2, RoundingMode.HALF_EVEN);
+    BigDecimal fit  = new BigDecimal(((Math.abs(resultCorpo.doubleValue() - 100) * 1.5) + Math.abs(resultBarba.doubleValue() - 100))/2.5).setScale(2, RoundingMode.HALF_EVEN);
     
     return fit.doubleValue();
   }
