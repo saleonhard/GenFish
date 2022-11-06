@@ -1,20 +1,25 @@
 /**
  * Componente Curricular: Estrutura de Dados
- * Autor: Leonardo Aquino
- * Adaptado de: Nicholas Tang
+ * Autor:  Nicholas Tang
+ * Adaptado por: Leonardo Aquino GitHub: https://github.com/saleonhard
  * Código Fonte Disponível em: <https://www.openprocessing.org/sketch/20105/> 
  * Data:   ‎8‎ de ‎Outubro‎ de ‎2019
+ * Atualizado em: 6‎ de ‎Novembro‎ de ‎2022
  *
- * Declaro que este código foi elaborado por mim de forma individual e
- * não contém nenhum trecho de código de outro colega ou de outro autor, 
- * tais como provindos de livros e apostilas, e páginas ou documentos 
- * eletrônicos da Internet. Qualquer trecho de código de outra autoria que
- * uma citação para o  não a minha está destacado com  autor e a fonte do
- * código, e estou ciente que estes trechos não serão considerados para fins
- * de avaliação. Alguns trechos do código podem coincidir com de outros
- * colegas pois estes foram discutidos em sessões tutorias.
+ * Projeto iniciamente criado para SNCT 2019 do IFBA - Campus Feira de Santana. v 2.0
+ * Atualizado para a 1º Edicção do BSI Integra (De 7 a 8 de Novembro de 2022) v 2.1
+ *
+ * Declaro que este código foi adaptado por mim de forma individual e que
+ * o autor autor original está destacado bem como a fonte do
+ * código.
+ *
+ * A representação visual simula a evolução de um conjunto de peixes (por geração).
+ * A cada geração os indivíduos “evoluem” buscando uma melhor adaptação a cor do ambiente.
+ * Será possível definir: a cor do ambiente, tamanho da população,taxa de crossover,taxa de mutação,elitismo e número máximo de gerações.
+ *
  */
 
+///--- ABAIXO COMENTARIOS DO AUTOR DO CÓDIGO ---
 
 //Nicholas Tang
 //Thanks to Tanmay Prakash for help with the math

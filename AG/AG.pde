@@ -1,16 +1,24 @@
-/** //<>//
+/** //<>// //<>//
  * Componente Curricular: Estrutura de Dados
- * Autor: Leonardo Aquino
+ * Autor: Leonardo Aquino GitHub: https://github.com/saleonhard
  * Data:   ‎8‎ de ‎Outubro‎ de ‎2019
+ * Atualizado em: 6‎ de ‎Novembro‎ de ‎2022
+ * 
+ * Projeto iniciamente criado para SNCT 2019 do IFBA - Campus Feira de Santana. v 2.0
+ * Atualizado para a 1º Edicção do BSI Integra (De 7 a 8 de Novembro de 2022) v 2.1
  *
  * Declaro que este código foi elaborado por mim de forma individual e
  * não contém nenhum trecho de código de outro colega ou de outro autor, 
  * tais como provindos de livros e apostilas, e páginas ou documentos 
  * eletrônicos da Internet. Qualquer trecho de código de outra autoria que
  * uma citação para o  não a minha está destacado com  autor e a fonte do
- * código, e estou ciente que estes trechos não serão considerados para fins
- * de avaliação. Alguns trechos do código podem coincidir com de outros
- * colegas pois estes foram discutidos em sessões tutorias.
+ * código.
+ *
+ *
+ * A representação visual simula a evolução de um conjunto de peixes (por geração).
+ * A cada geração os indivíduos “evoluem” buscando uma melhor adaptação a cor do ambiente.
+ * Será possível definir: a cor do ambiente, tamanho da população,taxa de crossover,taxa de mutação,elitismo e número máximo de gerações.
+ *
  */
  
 import java.util.Random;
@@ -70,7 +78,7 @@ class AlgGenetico {
     elitismo = e;
   }
   
-
+ //primeira geração
   public void populacao(int tamPop) {
 
     
@@ -78,33 +86,36 @@ class AlgGenetico {
       fishes.add( new Fish(0, 0, (3*PI)/2, (6+floor(random(0, 3))*20)/360.0, int(random(6) > 1)-random(0.1), (int)random(0, 255), (int)random(0, 255), (int)random(0, 255), (int)random(0, 255), (int)random(0, 255), (int)random(0, 255)));
     }
   }
-
+  //gerando uma nova geração
   public  ArrayList<Fish> novaGeracao(ArrayList<Fish> populacao, boolean elitismo) {
     Random  r = new Random();
     Fish aux;
     Fish best = populacao.get(0);
+    Fish worst = populacao.get(int(numfish-1));
+    
     //nova população do mesmo tamanho da antiga
     ArrayList<Fish> filhos = new ArrayList(2);
     ArrayList<Fish> novaPopulacao = new ArrayList();
     ArrayList<Fish> pais = new ArrayList();
-    println("inicial: "+populacao.size());
+    
 
 
     //insere novos indivíduos na nova população, até atingir o tamanho máximo
     while (novaPopulacao.size() != numfish) {
       //seleciona os 2 pais por torneio
-      if ( numfish - novaPopulacao.size() == 1) {
-        pais.add(populacao.get(0));
+      if ( numfish - novaPopulacao.size() == 1) { // caso a população tenha um numero impar: pega dois individuos (o melho e o pior) da população atual
+        
         pais.add(best);
+        pais.add(worst);
+        
       } else {
-        pais = selecaoTorneio();
+        pais = selecaoTorneio(); // caso a população tenha um numero impar: pega dois individuos aleatorios da população atual
       }
 
-      println(novaPopulacao.size());
-      println(populacao.size());
+     
       //verifica a taxa de crossover, se sim realiza o crossover, se não, mantém os pais selecionados para a próxima geração
       if (r.nextDouble() <= taxaDeCrossover) {
-        println("fez crossover");
+        println("Fez crossover");
         filhos = crossover(pais.get(0), pais.get(1));
       } else {
         filhos.add((pais.get(0)));
@@ -132,18 +143,20 @@ class AlgGenetico {
       filhos.clear();
     }
 
-
+    // gera um valor aleatorio, caso ele seja menor que a taxa de mutação o idividuo sofrerar mutação
     for (int i = 0; i< novaPopulacao.size(); i++) {
       Double sofreMuta = r.nextDouble();
-      println("random muta :"+ sofreMuta);
+      println("Mutação random :"+ sofreMuta);
+      
       if (sofreMuta < taxaDeMutacao ) {
-        println("Mutou"); 
+         
         mutacao(novaPopulacao.get(i));
+        println("Mutou");
       }
     } 
 
 
-    //se tiver elitismo, mantém o melhor indivíduo da geração atual
+    //se tiver elitismo, mantém o melhor indivíduo da geração atual - substituido o pior da nova geração<-- https://repositorio.ufu.br/bitstream/123456789/14632/1/NGLMalaquiasDISPRT.pdf pags 51-52 
     if (elitismo) {
       //calcular o fit
       for (int i = 0; i < novaPopulacao.size(); i++) {
@@ -152,32 +165,25 @@ class AlgGenetico {
       }
       //ordena a nova população
       ordenaPopulacao(novaPopulacao);
+      
+    
       aux = novaPopulacao.get(0);
-      println("melhor" + aux.getFit());
-      if (aux.getFit() < best.getFit()) {
-        novaPopulacao.add(0, best);
-        println("elitismo aplicado");
-      }
+      novaPopulacao.add(int(numfish - 1), best);
+      println("Elitismo aplicado");
+     
+      
+      //if (aux.getFit() < best.getFit()) {
+      //  novaPopulacao.add(0, best);
+      //  println("Elitismo aplicado");
+      //}
     }
 
     return novaPopulacao;
   }
 
  
-  //Double fitness(Fish fish, int r, int g, int b) {
-  //  Float   aR  = calAptidao(fish.getR(), r);
-  //  Float   aG  = calAptidao(fish.getG(), g);
-  //  Float   aB  = calAptidao(fish.getB(), b);
-    
-  //  Float   aRB  = calAptidao(fish.getRB(), r);
-  //  Float   aGB  = calAptidao(fish.getGB(), g);
-  //  Float   aBB  = calAptidao(fish.getBB(), b);
-
-  //  Double fit = ajusteAp(fish, aR, aG, aB, 0) + ajusteAp(fish, aRB, aGB, aBB, 0);
-
-  //  return Math.ceil(fit/2);
-  //}
   
+  //Calcula o fit de cada inviduo ultilizando a distancia entre as cores baseado no diagrama cie <-- 
   Double fitness(Fish fish, int r, int g, int b) {
     
     double labC[] = rgbToLab(fish.getR(), fish.getG(),fish.getB()); 
@@ -192,56 +198,8 @@ class AlgGenetico {
     return fit.doubleValue();
   }
 
-  Double ajusteAp( Fish fish, float aR, float aG, float aB, int cont) {
-
-
-
-    float valores [] = {33.3, 26.64, 22.2, 17.76, 11.1, 6.66, 2.22, 0.022, 0.00};
-
-    println (aR+" "+aG+" "+aB);
-    if (aR == valores [cont] && aG == valores [cont] && aB == valores [cont]) {
-
-      return  Math.ceil(aR+aG+aB);
-    } else if ((aR ==aG && aR == valores [cont]) || (aR == aB && aR == valores [cont]) || (aB == aG && aB == valores [cont])) {
-
-      return    Math.ceil((aR+aG+aB)- (valores [cont]/3));
-    } else if ((aR == valores [cont]) || (aG == valores [cont]) || (aB == valores [cont])) {
-      return    Math.ceil((aR+aG+aB)-(valores [cont]/2));
-    } else {
-
-      println ("loop: " + valores [cont]);        
-      return ajusteAp(fish, aR, aG, aB, ++cont);
-    }
-  }
-
-  float calAptidao(int x, int y) {
-    int dif = Math.abs(x - y);
-    float apt = 0.00;
-
-    if (dif == 0) {
-      apt = 33.3;
-    } else if (dif >= 1 && dif <= 31) {
-      apt = 26.64;
-    } else if (dif >= 32 && dif <= 63) {
-      apt = 22.2;
-    } else if (dif >= 64 && dif <= 95) {
-      apt = 17.76;
-    } else if (dif >= 96 && dif <= 127) {
-      apt = 11.1;
-    } else if (dif >= 128 && dif <= 159) {
-      apt = 6.66;
-    } else if (dif >= 160 && dif <= 191) {
-      apt = 2.22;
-    } else if (dif >= 192 && dif <= 223) {
-      apt = 0.022;
-    } else if (dif >= 224 && dif <= 255) {
-      apt = 0.00;
-    }
-
-    return apt;
-  }
   
-  // Calcula a distancia entre duas cores
+  // Calcula a distancia entre duas cores <-- Extraido de: https://github.com/wuchubuzai/OpenIMAJ/blob/master/image/image-processing/src/main/java/org/openimaj/image/analysis/colour/CIEDE2000.java  --- Autor : Jonathon Hare (jsh2@ecs.soton.ac.uk)
   public double calculateDeltaE(double L1, double a1, double b1, double L2, double a2, double b2) {
     double Lmean = (L1 + L2) / 2.0; //ok
     double C1 =  Math.sqrt(a1*a1 + b1*b1); //ok
@@ -289,7 +247,7 @@ class AlgGenetico {
     return deltaE;
   }
   
-  // Converte de RGB para LAB
+  // Converte de RGB para LAB <--  Extraido de: https://stackoverflow.com/questions/4593469/java-how-to-convert-rgb-color-to-cie-lab  --- Autor : Thanasis1101
   public  double[] rgbToLab(int R, int G, int B) {
 
     double r, g, b, X, Y, Z, xr, yr, zr;
@@ -362,99 +320,29 @@ class AlgGenetico {
 
  } 
 
-  ArrayList <Fish>  roleta() {
-
-    ArrayList<Integer> pesos = new ArrayList();
-    int c = 0;
-
-    while (c < 2) {
-
-      int somatorio = 0;
-      for (int i = 0; i < fishesCopia.size(); i++) {
-        Fish f = (Fish) fishesCopia.get(i);
-
-        if (f.getFit() == 0) {
-          somatorio += 0;
-          pesos.add(0);
-        } else if (f.getFit()>= 1 && f.getFit() <= 5 ) {
-          pesos.add(1);
-          somatorio += 1;
-        } else if (f.getFit()>= 6 && f.getFit() <= 10 ) {
-          pesos.add(2);
-          somatorio += 2;
-        } else if (f.getFit()>= 11 && f.getFit() <= 20 ) {
-          pesos.add(3);
-          somatorio += 3;
-        } else if (f.getFit()>= 21 && f.getFit() <= 30 ) {
-          pesos.add(4);
-          somatorio += 4;
-        } else if (f.getFit()>= 31 && f.getFit() <= 40 ) {
-          pesos.add(5);
-          somatorio += 5;
-        } else if (f.getFit()>= 41 && f.getFit() <= 50 ) {
-          pesos.add(6);
-          somatorio += 6;
-        } else if (f.getFit()>= 51 && f.getFit() <= 60 ) {
-          pesos.add(7);
-          somatorio += 7;
-        } else if (f.getFit()>= 61 && f.getFit() <= 70 ) {
-          pesos.add(8);
-          somatorio += 8;
-        } else if (f.getFit()>= 71 && f.getFit() <= 80 ) {
-          pesos.add(9);
-          somatorio += 9;
-        } else if (f.getFit()>= 81 && f.getFit() <= 90 ) {
-          pesos.add(10);
-          somatorio += 10;
-        } else if (f.getFit()>= 91 && f.getFit() <= 100 ) {
-          pesos.add(11);
-          somatorio += 11;
-        }
-      }
-
-      int r = (int)random(0, somatorio);
-      int posicaoEscolhida = -1;
-      println(r);
-      do
-      { 
-        posicaoEscolhida++;
-        r = r -  (int)pesos.get(posicaoEscolhida);
-      } 
-      while (r > 0);
-      println(somatorio);
-      println(r);
-      println(posicaoEscolhida);
-      println("--------------------------");
-
-      Fish f = (Fish) fishesCopia.get(posicaoEscolhida);
-      selecionados.add(f);
-      fishesCopia.remove(posicaoEscolhida);
-      c++;
-    }
-    return selecionados;
-  }
   
+  //Realiza a seleção dos pais da proxima geração.  <-- Este tipo de seleção foi escolhida, pois segundo a literatura esta permite uma maior miscigenação da população (evitar maximos locais) 
   ArrayList<Fish> selecaoTorneio() {
 
     ArrayList<Fish> candidatos = new ArrayList();
     ArrayList<Fish> pais = new ArrayList();
 
     int index;
-    if (fishesCopia.size()>= 4) {
+    if (fishesCopia.size()>= 4) { // caso a população seja maior ou  igual a quatro: quatro individuos são selcionados aleatoriamente e add a lista de possiveis pais (candidatos) 
       for (int i=0; i < 4; i++) {
         index = (int)random(0, fishesCopia.size());
         candidatos.add((Fish)fishesCopia.get(index));
-        fishesCopia.remove(index);
+        fishesCopia.remove(index); // <-- remove os caditatos da lista principal 
       }
-      ordenaPopulacao(candidatos); 
-      pais.add((Fish)candidatos.get(0));
-      pais.add((Fish)candidatos.get(1));
+      ordenaPopulacao(candidatos);       // ordena os candidatos e paga os dois melhores dessa rodada <-- melhoria: pegar apenas um por vez
+      pais.add((Fish)candidatos.get(0)); // 
+      pais.add((Fish)candidatos.get(1)); // adiciona os dois melhores a lista de pais 
 
       fishesCopia.add((Fish)candidatos.get(2));
-      fishesCopia.add((Fish)candidatos.get(3));
-    } else {
-      ordenaPopulacao(fishesCopia);
-      pais.add((Fish)fishesCopia.get(0));
+      fishesCopia.add((Fish)candidatos.get(3));// adiciona outros dois a lista principal novamente (não foi a vez deles :( )
+    } else {                                 // caso a população seja menor que quatro: não recomendado 
+      ordenaPopulacao(fishesCopia);          // ordena
+      pais.add((Fish)fishesCopia.get(0));    // pega o melhor e adiciona a lista de pais 
       fishesCopia.remove(0);
       pais.add((Fish)fishesCopia.get(0));
       fishesCopia.remove(0);
@@ -462,19 +350,19 @@ class AlgGenetico {
 
 
 
-    return pais;
+    return pais; //retona os pais da vez
   }
 
 
-
+ // faz o cruzamento dos genes dos individuos, baseado no ponto de corte
   ArrayList<Fish> crossover(Fish p1, Fish p2) {
     ArrayList<Fish> filhos = new ArrayList();
 
     Fish filho1 = new Fish(0, 0, (3*PI)/2, (6+floor(random(0, 3))*20)/360.0, int(random(6) > 1)-random(0.1), 0, 0, 0, 0, 0, 0);
     Fish filho2 = new Fish(0, 0, (3*PI)/2, (6+floor(random(0, 3))*20)/360.0, int(random(6) > 1)-random(0.1), 0, 0, 0, 0, 0, 0);
-    ;
+    
     int pntCorte = (int)random(1, 4);
-    System.out.println(pntCorte); 
+    println("Ponto de corte: " + pntCorte); 
 
 
     switch (pntCorte) {
@@ -496,79 +384,104 @@ class AlgGenetico {
 
     return filhos;
   }
-
+  
+  // Realiza a mutação de um dos genes responsaveis pela cor do individuo. Esta mutação pode ocorrer tanto no corpo quanto na barbatana
   void mutacao (Fish filho) {
 
 
     int pntMuta = (int)random(1, 4);
-    int muta = (int)random(0, 255);
+    int mutaC = (int)random(0, 255);
+    int mutaB = (int)random(0, 255);
     int tipo = (int)random(0, 2);
-    System.out.println(pntMuta); 
-
+   
+    println("Ponto de mutação :"+ pntMuta);
+    println("Tipo de mutação :"+ tipo);
+    
+    
     switch (pntMuta) {
     case 1:
-
-      int r = filho.getR();
-      int rb = filho.getRB();
+    
       if (tipo == 1 ) {
-        r  = r + muta;
-        rb  = rb + muta;
-        filho.setR((r > 255? 255: r));
-       
-        filho.setRB((rb > 255? 255: rb));
-      } else {
-        r  = r - muta;
-       
-        rb  = rb - muta;
-        filho.setR((r < 0? 0: r));
         
-        filho.setRB((rb < 0? 0: rb));
+        int r = filho.getR();
+    
+        while( r == mutaC){
+         mutaC = (int)random(0, 255); 
+        }
+        
+        println("Mutação Corpo (R):"+ mutaC);
+        filho.setR(mutaC);
+       
+        
+      } else {
+        
+        int rb = filho.getRB();
+        
+        while( rb == mutaB){
+         mutaB = (int)random(0, 255); 
+        }
+        
+        println("Mutação Barbatana (R):"+ mutaB);
+        filho.setRB(mutaB);
+        
       }
       break;
     case 2:
-      int g = filho.getG();
+    
       
-      int gb = filho.getGB();
       if (tipo == 1 ) {
-        g  = g + muta;
         
-        gb  = gb + muta;
-        filho.setG((g > 255? 255: g));
-       
-        filho.setGB((gb > 255? 255: gb));
+        int gb = filho.getGB();
+        
+        while( gb == mutaB){
+         mutaB = (int)random(0, 255); 
+        }
+        
+        println("Mutação Barbatana (G):"+ mutaB);
+        filho.setGB(mutaB);
+        
       } else {
-        g  = g - muta;
         
-        gb  = gb - muta;
-        filho.setG((g < 0? 0: g));
+        int g = filho.getG();
         
-        filho.setG((gb < 0? 0: gb));
+        while( g == mutaC){
+         mutaC = (int)random(0, 255); 
+        }
+        
+        println("Mutação Corpo (G):"+ mutaC);
+        filho.setG(mutaC);  
+        
       }
       break;
-    default:
-      int b = filho.getB();
-     
-      int bb = filho.getBB();
+   case 3:
+      
       if (tipo == 1 ) {
-        b  = b + muta;
         
-        bb  = bb + muta;
-        filho.setB((b > 255? 255: b));
-       
-        filho.setBB((bb > 255? 255: bb));
+        int b = filho.getB();
+        while( b == mutaC){
+         mutaC = (int)random(0, 255); 
+        }
+        
+        println("Mutação Corpo (B):"+ mutaC);
+        filho.setB(mutaC);
+     
+        
       } else {
-        b  = b - muta;
-       
-        bb  = bb - muta;
         
-        filho.setB((b < 0? 0: b));
-       
-        filho.setBB((bb < 0? 0: bb));
+        int bb = filho.getBB();
+         while( bb == mutaB){
+         mutaB = (int)random(0, 255); 
+        }
+        
+        println("Mutação Barbatana (B):"+ mutaB);
+        filho.setBB(mutaB);
+        
       }
       break;
     }
   }
   
+  // ordena a população de acordo com o fit
   public void ordenaPopulacao(ArrayList <Fish> vetor) {
 
     for (int i = 1; i < vetor.size(); i++) {
@@ -583,4 +496,151 @@ class AlgGenetico {
       vetor.set(j, aux);
     }
   }
+  
+  
+  
+  
+  //----OS MÉTODOS/FUNCÕES ABAIXO FORAM ATUALIZADOS----///
+  
+  
+  
+  //ArrayList <Fish>  roleta() {
+
+  //  ArrayList<Integer> pesos = new ArrayList();
+  //  int c = 0;
+
+  //  while (c < 2) {
+
+  //    int somatorio = 0;
+  //    for (int i = 0; i < fishesCopia.size(); i++) {
+  //      Fish f = (Fish) fishesCopia.get(i);
+
+  //      if (f.getFit() == 0) {
+  //        somatorio += 0;
+  //        pesos.add(0);
+  //      } else if (f.getFit()>= 1 && f.getFit() <= 5 ) {
+  //        pesos.add(1);
+  //        somatorio += 1;
+  //      } else if (f.getFit()>= 6 && f.getFit() <= 10 ) {
+  //        pesos.add(2);
+  //        somatorio += 2;
+  //      } else if (f.getFit()>= 11 && f.getFit() <= 20 ) {
+  //        pesos.add(3);
+  //        somatorio += 3;
+  //      } else if (f.getFit()>= 21 && f.getFit() <= 30 ) {
+  //        pesos.add(4);
+  //        somatorio += 4;
+  //      } else if (f.getFit()>= 31 && f.getFit() <= 40 ) {
+  //        pesos.add(5);
+  //        somatorio += 5;
+  //      } else if (f.getFit()>= 41 && f.getFit() <= 50 ) {
+  //        pesos.add(6);
+  //        somatorio += 6;
+  //      } else if (f.getFit()>= 51 && f.getFit() <= 60 ) {
+  //        pesos.add(7);
+  //        somatorio += 7;
+  //      } else if (f.getFit()>= 61 && f.getFit() <= 70 ) {
+  //        pesos.add(8);
+  //        somatorio += 8;
+  //      } else if (f.getFit()>= 71 && f.getFit() <= 80 ) {
+  //        pesos.add(9);
+  //        somatorio += 9;
+  //      } else if (f.getFit()>= 81 && f.getFit() <= 90 ) {
+  //        pesos.add(10);
+  //        somatorio += 10;
+  //      } else if (f.getFit()>= 91 && f.getFit() <= 100 ) {
+  //        pesos.add(11);
+  //        somatorio += 11;
+  //      }
+  //    }
+
+  //    int r = (int)random(0, somatorio);
+  //    int posicaoEscolhida = -1;
+  //    println(r);
+  //    do
+  //    { 
+  //      posicaoEscolhida++;
+  //      r = r -  (int)pesos.get(posicaoEscolhida);
+  //    } 
+  //    while (r > 0);
+  //    println(somatorio);
+  //    println(r);
+  //    println(posicaoEscolhida);
+  //    println("--------------------------");
+
+  //    Fish f = (Fish) fishesCopia.get(posicaoEscolhida);
+  //    selecionados.add(f);
+  //    fishesCopia.remove(posicaoEscolhida);
+  //    c++;
+  //  }
+  //  return selecionados;
+  //}
+  
+  
+  //---CALCULA O FITNESS--- VERSÃO ANTIGA FEITA POR MIM ////
+  
+  //Double fitness(Fish fish, int r, int g, int b) {
+  //  Float   aR  = calAptidao(fish.getR(), r);
+  //  Float   aG  = calAptidao(fish.getG(), g);
+  //  Float   aB  = calAptidao(fish.getB(), b);
+    
+  //  Float   aRB  = calAptidao(fish.getRB(), r);
+  //  Float   aGB  = calAptidao(fish.getGB(), g);
+  //  Float   aBB  = calAptidao(fish.getBB(), b);
+
+  //  Double fit = ajusteAp(fish, aR, aG, aB, 0) + ajusteAp(fish, aRB, aGB, aBB, 0);
+
+  //  return Math.ceil(fit/2);
+  //}
+  
+  //AUXILIARIES PARA CALCULAR O FITNESS//
+  
+  //Double ajusteAp( Fish fish, float aR, float aG, float aB, int cont) {
+
+
+
+  //  float valores [] = {33.3, 26.64, 22.2, 17.76, 11.1, 6.66, 2.22, 0.022, 0.00};
+
+  //  println (aR+" "+aG+" "+aB);
+  //  if (aR == valores [cont] && aG == valores [cont] && aB == valores [cont]) {
+
+  //    return  Math.ceil(aR+aG+aB);
+  //  } else if ((aR ==aG && aR == valores [cont]) || (aR == aB && aR == valores [cont]) || (aB == aG && aB == valores [cont])) {
+
+  //    return    Math.ceil((aR+aG+aB)- (valores [cont]/3));
+  //  } else if ((aR == valores [cont]) || (aG == valores [cont]) || (aB == valores [cont])) {
+  //    return    Math.ceil((aR+aG+aB)-(valores [cont]/2));
+  //  } else {
+
+          
+  //    return ajusteAp(fish, aR, aG, aB, ++cont);
+  //  }
+  //}
+
+  //float calAptidao(int x, int y) {
+  //  int dif = Math.abs(x - y);
+  //  float apt = 0.00;
+
+  //  if (dif == 0) {
+  //    apt = 33.3;
+  //  } else if (dif >= 1 && dif <= 31) {
+  //    apt = 26.64;
+  //  } else if (dif >= 32 && dif <= 63) {
+  //    apt = 22.2;
+  //  } else if (dif >= 64 && dif <= 95) {
+  //    apt = 17.76;
+  //  } else if (dif >= 96 && dif <= 127) {
+  //    apt = 11.1;
+  //  } else if (dif >= 128 && dif <= 159) {
+  //    apt = 6.66;
+  //  } else if (dif >= 160 && dif <= 191) {
+  //    apt = 2.22;
+  //  } else if (dif >= 192 && dif <= 223) {
+  //    apt = 0.022;
+  //  } else if (dif >= 224 && dif <= 255) {
+  //    apt = 0.00;
+  //  }
+
+  //  return apt;
+  //}
 }

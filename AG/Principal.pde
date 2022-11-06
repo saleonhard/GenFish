@@ -1,18 +1,29 @@
-/** //<>//
+/** //<>// //<>//
  * Componente Curricular: Estrutura de Dados
- * Autor: Leonardo Aquino
+ * Autor: Leonardo Aquino GitHub: https://github.com/saleonhard
  * Data:   ‎8‎ de ‎Outubro‎ de ‎2019
+ * Atualizado em: 6‎ de ‎Novembro‎ de ‎2022
+ *
+ *
+ * Projeto iniciamente criado para SNCT 2019 do IFBA - Campus Feira de Santana. v 2.0
+ * Atualizado para a 1º Edicção do BSI Integra (De 7 a 8 de Novembro de 2022) v 2.1
  *
  * Declaro que este código foi elaborado por mim de forma individual e
  * não contém nenhum trecho de código de outro colega ou de outro autor, 
  * tais como provindos de livros e apostilas, e páginas ou documentos 
  * eletrônicos da Internet. Qualquer trecho de código de outra autoria que
  * uma citação para o  não a minha está destacado com  autor e a fonte do
- * código, e estou ciente que estes trechos não serão considerados para fins
- * de avaliação.
+ * código.
+ *
+ *
+ * A representação visual simula a evolução de um conjunto de peixes (por geração).
+ * A cada geração os indivíduos “evoluem” buscando uma melhor adaptação a cor do ambiente.
+ * Será possível definir: a cor do ambiente, tamanho da população,taxa de crossover,taxa de mutação,elitismo e número máximo de gerações.
+ *
  */
  
 import controlP5.*;
+import javax.swing.*;
 
 
 ControlP5 cp5, Slider;
@@ -20,7 +31,7 @@ ControlP5 cp5, Slider;
 
 Textlabel labelGer, indCarac,idCorBar, cor, label2, label, fit;
 String sR, sG, sB;
-int velocidades [] ={15000, 1000, 0};
+int velocidades [] ={15000, 1000, 0}; //<-- velocidades do autoplay
 boolean e, p;
 AlgGenetico ag = new AlgGenetico();
 
@@ -55,12 +66,10 @@ int prox = 0 ;
 int pondR, pondG, pondB;
 
 
-
+//configurando tamanho da janela
 public void settings() {
   size(1140, 670);
   
-
- 
 }
 
 
@@ -95,9 +104,8 @@ void setup() {
   ranking = new ArrayList();
   fishesCopia = new ArrayList();
 
-
-
   iniciarGUI();
+  
 }
 
 
@@ -145,7 +153,7 @@ void draw() {
     float randt = fish1.getfisht(0);
 
 
-    int dir;
+    //int dir;
     fisht = fisht + 1;
 
     fish1.display(t);
@@ -176,7 +184,7 @@ void draw() {
 
 
     if ((pos1[1] > ((width/2)+100)/25)) {
-      dir = dirSet();
+      //dir = dirSet();
       fish1.setth(th+signs(1));
       aux.setth(th+signs(1)); 
 
@@ -215,28 +223,33 @@ void draw() {
     automatico = false;  
     cp5.getController("pause").setMousePressed(false);
   }
-
-if(play){
-
+  
+// se autoplay estiver ativo  
+if(play && numfish > 1  && numfish < 21){
+  //
   if (!encontrou && automatico && (geracaoAtual !=  ag.getMaxGeracoes() &&  ag.getMaxGeracoes() != -1)) {
 
     if (millis() - timer >=  ( velocidades[vel -1])) {
-      println ("teste");
-      print("proxima ger");
+      
+      println("----------------------\nGeração: " +geracao);
+      //criando nova geração automaticamente
       ArrayList ng =   ag.novaGeracao(fishesCopia, ag.getElitismo());
-
+      
+       //configurando os peixes com os parametros da nova geração ---ponto de partida, cor do corpo e da barbatana e etc..
       fishes.clear();
       for (int u = 0; u < numfish; u++) {
         Fish f = (Fish) ng.get(u);
 
         fishes.add( new Fish(0, 0, (3*PI)/2, (6+floor(random(0, 3))*20)/360.0, int(random(5) > 1)-random(0.1),f.getR(), f.getG(), f.getB(), f.getRB(), f.getGB(), f.getBB()));
       }
+       //calculando o fit de cada individuo da geração e "setando" seu fit ..
       for (int i = 0; i < fishes.size(); i++) {
         Fish f = (Fish) fishes.get(i);
         f.setFit(  ag.fitness(f, pondR, pondG, pondB));
         println( f.getFit() +"% - "+ f.getR()+ "," +f.getG()+ ","+f.getB());
       }
-
+      
+      //oredena de acordo com o fit
       ag.ordenaPopulacao(fishes);
       println();
 
@@ -246,14 +259,16 @@ if(play){
         if (i == 0 && f.getFit() == 100 ) {
 
           encontrou = true;
+         
         }
-
+        //exibir peixes no ranking
         ranking.add(i, new Fish(98, 4, (3*PI)/2, (6+floor(random(0, 3))*20)/360.0, int(random(5) > 1)-random(0.1), f.getR(), f.getG(), f.getB(), f.getRB(), f.getGB(), f.getBB()));
         Fish ind = (Fish) ranking.get(i);
         ind.setFit(f.getFit());
         println( ind.getFit() +"% - "+ ind.getR()+ "," +ind.getG()+ ","+ind.getB());
       }
-
+      
+      //adicionando a geração anterior a lista de gerações ---assim será possivel navegar entre as gerações
       ArrayList<Fish> copia = new ArrayList(fishes);
       geracoes.add(copia); 
       geracao = geracao +1;
@@ -294,7 +309,7 @@ void iniciarGUI() {
   PFont font3  =  createFont("Arial Black", 15);
   PFont font4  =  createFont("Arial Black", 11);
   PFont fontS39  =  loadFont("Stencil-39.vlw");
-  PFont fontS20  =  loadFont("Stencil-20.vlw");
+  //PFont fontS20  =  loadFont("Stencil-20.vlw");
 
 
 
@@ -333,7 +348,7 @@ void iniciarGUI() {
     .getCaptionLabel().align(ControlP5.LEFT_OUTSIDE, CENTER)
     .getStyle().setPaddingLeft(-10);
 
-  cp5.addTextfield("Taxa de Mutação:").setText("0.2").setPosition(255, 395).setSize(40, 40)
+  cp5.addTextfield("Taxa de Mutação:").setText("0.001").setPosition(255, 395).setSize(40, 40) //<--  A taxa de mutação deve pequena: 0,001 ≤ taxa ≤ 0,1
     .setFont(font).setAutoClear(false)
     .getCaptionLabel().align(ControlP5.LEFT_OUTSIDE, CENTER)
     .getStyle().setPaddingLeft(-10);
@@ -408,25 +423,30 @@ void iniciarGUI() {
     cp5.getController("antInd").setMousePressed(false);
   }
 }
+
+//configura comportamento do botão autoplay
 void autoplay(boolean theValue) {
-  println("autoplay:", theValue);
+  
   cp5.getController("Velocidade").setVisible(theValue);
   cp5.getController("vautply").setVisible(theValue);
   ativarAutomatico = theValue;
   p = theValue;
   play = theValue;
 }
+
+//setando o elitismo
 void elitismo(boolean theValue) {
-  println("got an event for icon", theValue);
+  
   ag.setElitismo(theValue);
   e = theValue;
+  
 }
 
 // botão iniciar
 void INICIAR() {
   
 
-  println("ta ativo" + cp5.getController("autoplay").isMousePressed());
+  
   if (ativarAutomatico) {
     cp5.getController("pause").show();
   } else {
@@ -436,7 +456,7 @@ void INICIAR() {
   String n = cp5.get(Textfield.class, "Tamanho da População:").getText();
   numfish = Integer.parseInt(n);
 
-  int num = Integer.parseInt(n);
+  //int num = Integer.parseInt(n);
   String txMuta = cp5.get(Textfield.class, "Taxa de Mutação:").getText();
 
   ag.setTaxaDeMutacao(Double.parseDouble(txMuta));
@@ -449,6 +469,17 @@ void INICIAR() {
   ag.setMaxGeracoes( Integer.parseInt(nMax));
 
 
+  if (numfish < 2 || numfish > 20 ){
+    
+   print( "população muito pequena!"); 
+   println("Button B pressed");
+   loop();  
+   displayMessageBoxOKCancel("Tamanho da população inválido!\n Os tamanhos recomendados são entre 2 e 20");
+  
+   
+  } 
+  else{
+    
   cp5.getController("Tamanho da População:").setLock(true);
   cp5.getController("Taxa de Crossover:").setLock(true);
   cp5.getController("Taxa de Mutação:").setLock(true);
@@ -462,35 +493,41 @@ void INICIAR() {
   cp5.getController("REINICIAR").show();
   cp5.getController("prxInd").show();
   cp5.getController("antInd").show();
-
-
-
-
+    
+  
+    
+  //criando a primeira geração
   ag.populacao((int) numfish);
 
-  //ANALISE PEIXE
+  //analisa o fit dos individuos da primeira geração
   for (int i = 0; i < fishes.size(); i++) {
     Fish f = (Fish) fishes.get(i);
     f.setFit( ag.fitness(f, pondR, pondG, pondB));
-    println( f.getFit() +"% - "+ f.getR()+ "," +f.getG()+ ","+f.getB());
+    
   }
-
+  
+  //oredena de acordo com o fit
   ag.ordenaPopulacao(fishes);
   println();
+  println("-- PRIMEIRA GERAÇÃO --");
   for (int i = 0; i < fishes.size(); i++) {
     Fish f = (Fish) fishes.get(i);
+    //exibir peixes no ranking
     ranking.add(new Fish(98, 4, (3*PI)/2, (6+floor(random(0, 3))*20)/360.0, int(random(5) > 1)-random(0.1),f.getR(), f.getG(), f.getB(), f.getRB(), f.getGB(), f.getBB()));
     Fish ind = (Fish) ranking.get(i);
     ind.setFit(f.getFit());
+    
     println( ind.getFit() +"% - "+ ind.getR()+ "," +ind.getG()+ ","+ind.getB());
   }
-
+  
+  //adiciona a primeira geração a lista de gerações -- com essa lista é possivel navegar entre as gerações 
   ArrayList<Fish> copia = new ArrayList(fishes);
   geracoes.add(copia);  
   fishesCopia = fishes;
   geracao = geracao +1;
   geracaoAtual = geracaoAtual +1;
-
+  
+  //cofiguando autoplay
   if ( geracaoAtual== 1 && ativarAutomatico) {
     if (millis() - timer >=  ( velocidades[vel -1])) {
       automatico = true;
@@ -499,6 +536,7 @@ void INICIAR() {
   }
    cp5.getController("autoplay").update();
   iniciar = true;
+ }
 }
 
 
@@ -520,7 +558,9 @@ void REINICIAR() {
   cp5.getController("rank").hide();
   idCorBar.hide();
   fit.hide();
+  
 
+  
   fishes.clear();
   ranking.clear();
   fishesCopia.clear();
@@ -549,60 +589,73 @@ void REINICIAR() {
   timer = 0;
 }
 
+//INDIVIDUO ANTERIOR -- NO RANKING
 void  antInd() {
 
 
   if (prox == 0) {
+    
+    //INATIVAR BOTÃO CASO SEJA O PRIMEIRO
     cp5.getController("prxInd").setMousePressed(false);
-
-    print("block voltar");
   } else {
-    print(prox);
+    
     prox--;
   }
 }
+
+//PROXIMO INDIVIDUO -- NO RANKING
 void  prxInd() {
 
   if (prox == numfish-1) {
+    //INATIVAR BOTÃO CASO SEJA O ULTIMO
     cp5.getController("antInd").setMousePressed(false);
 
-    print("block ir");
   } else {
-    print(prox);
+    
     prox++;
   }
 }
-void prxGer() {
 
+
+//NAVEGAR ENTRE AS GERAÇÕES -- PROXIMA GERAÇÃO///
+void prxGer() {
+  // navegar entre as gerações --- caso não tenha encontrado o melhor e a geração não seja maior que o numero maximo de gerações
   if ( !encontrou && geracao != ag.getMaxGeracoes()) {
 
-    print(fishes.size());
+    
 
-
-    print("proxima ger");
+    //verifica se o numero geração atual é igual a numero ultima geração criada, caso positivo será criada uma nova geração,
+    // caso contrario continua navegando entre as geraçoes já criadas
+    
+    println("----------------------\nGeração: " +geracao);
     if (geracao == geracaoAtual) {
-
+      
+      //craindo uma nova nova geração
       ArrayList ng =  ag.novaGeracao(fishesCopia, ag.getElitismo());
 
+
+      //configurando os peixes com os parametros da nova geração ---ponto de partida, cor do corpo e da barbatana e etc..
       fishes.clear();
       for (int u = 0; u < numfish; u++) {
         Fish f = (Fish) ng.get(u);
         fishes.add( new Fish(0, 0, (3*PI)/2, (6+floor(random(0, 3))*20)/360.0, int(random(5) > 1)-random(0.1), f.getR(), f.getG(), f.getB(), f.getRB(), f.getGB(), f.getBB()));
       }
+      
+      //calculando o fit de cada individuo da geração e "setando" seu fit ..
       for (int i = 0; i < fishes.size(); i++) {
         Fish f = (Fish) fishes.get(i);
         f.setFit( ag.fitness(f, pondR, pondG, pondB));
-        println( f.getFit() +"% - "+ f.getR()+ "," +f.getG()+ ","+f.getB());
       }
 
-
+      //adicionando a geração anterior a lista de gerações ---assim será possivel navegar entre as gerações
       ArrayList<Fish> copia = new ArrayList(fishes);
       geracoes.add(copia); 
       geracao = geracao +1;
       geracaoAtual = geracaoAtual +1;
-    } else {
+      
+    } else { // andando pelas gerações
 
-      print("nao encontrou : px ger");
+      print ("entrou aquiii");
       geracao = geracao + 1;
       ArrayList gAnterior =  geracoes.get(geracao -1);
 
@@ -614,107 +667,137 @@ void prxGer() {
     }
 
     for (int i = 0; i < fishes.size(); i++) {
+      
       Fish f = (Fish) fishes.get(i);
       f.setFit( ag.fitness(f, pondR, pondG, pondB));
-      println( f.getFit() +"% - "+ f.getR()+ "," +f.getG()+ ","+f.getB());
+      
     }
 
     ag.ordenaPopulacao(fishes);
     println();
     for (int i = 0; i < fishes.size(); i++) {
       Fish f = (Fish) fishes.get(i);
-
+      //exibir peixes no ranking
       ranking.add(i, new Fish(98, 4, (3*PI)/2, (6+floor(random(0, 3))*20)/360.0, int(random(5) > 1)-random(0.1), f.getR(), f.getG(), f.getB(), f.getRB(), f.getGB(), f.getBB()));
       Fish ind = (Fish) ranking.get(i);
 
       if (i == 0 && f.getFit() == 100 ) {
 
         encontrou = true;
-        println("encontrou");
+        
       }
 
       ind.setFit(f.getFit());
       println( ind.getFit() +"% - "+ ind.getR()+ "," +ind.getG()+ ","+ind.getB());
     }
-  } else if ( encontrou && geracao <= geracaoAtual) {
+    // navegar entre as gerações --- caso tenha encontrado o melhor e a geração seja menor ou igual a geração atual
+  } else if ( encontrou && geracao < geracaoAtual) {
 
-    print("encontrou : px ger");
+     
     geracao = geracao + 1;
-    ArrayList gAnterior =  geracoes.get(geracao -1);
-
+    ArrayList gProx =  geracoes.get(geracao - 1);
+    
+    
     fishes.clear();
     for (int u = 0; u < numfish; u++) {
-      Fish f = (Fish) gAnterior.get(u);
+      Fish f = (Fish) gProx.get(u);
+      println("Fit: "+f.getFit());
       fishes.add(u, new Fish(0, 0, (3*PI)/2, (6+floor(random(0, 3))*20)/360.0, int(random(5) > 1)-random(0.1), f.getR(), f.getG(), f.getB(), f.getRB(), f.getGB(), f.getBB()));
-
-      ag.ordenaPopulacao(fishes);
-      println();
-
-      for (int i = 0; i < fishes.size(); i++) {
-        f = (Fish) fishes.get(i);
-
-        ranking.add(i, new Fish(98, 4, (3*PI)/2, (6+floor(random(0, 3))*20)/360.0, int(random(5) > 1)-random(0.1), f.getR(), f.getG(), f.getB(), f.getRB(), f.getGB(), f.getBB()));
-        Fish ind = (Fish) ranking.get(i);
-
-        if (i == 0 && f.getFit() == 100 ) {
-
-          encontrou = true;
-          println("encontrou");
-        }
-
-        ind.setFit(f.getFit());
-        println( ind.getFit() +"% - "+ ind.getR()+ "," +ind.getG()+ ","+ind.getB());
-      }
     }
-  }
+    
+    //ag.ordenaPopulacao(fishes);
+      println();
+      
+        //recalcula o fit para exibir no ranking --
+    for (int i = 0; i < fishes.size(); i++) {
+      Fish f = (Fish) fishes.get(i);
+      
+      f.setFit( ag.fitness(f, pondR, pondG, pondB));
+      
+    }
+    //ordenando peixes
+    ag.ordenaPopulacao(fishes);
+    println();
+    for (int i = 0; i < fishes.size(); i++) {
+      Fish f = (Fish) fishes.get(i);
+      //exibir peixes no ranking
+      ranking.add(i, new Fish(98, 4, (3*PI)/2, (6+floor(random(0, 3))*20)/360.0, int(random(5) > 1)-random(0.1), f.getR(), f.getG(), f.getB(),  f.getRB(), f.getGB(), f.getBB()));
+      Fish ind = (Fish) ranking.get(i);
+      ind.setFit(f.getFit());
+      println( ind.getFit() +"% - "+ ind.getR()+ "," +ind.getG()+ ","+ind.getB());
+    }
+
+   }
+  
 }
 
 
-//botão pause/play
-void pause() {
 
-
-  if ( cp5.getController("pause").getLabel().equals("pause")) {
-    print("pause");
-    play = false;
-    cp5.getController("pause").setImage(loadImage("Play_50px.png"));
-    cp5.getController("pause").setLabel("play");
-  } else {
-    print("play");
-    play = true;
-    cp5.getController("pause").setImage(loadImage("Pause_50px.png"));
-    cp5.getController("pause").setLabel("pause");
-  }
-}
-
+//NAVEGAR ENTRE AS GERAÇÕES -- GERAÇÃO ANTERIOR///
 void antGer() {
 
 
   if (geracao != 1) {
-    print("anterior ger");
+   
     geracao = geracao - 1;
+    println("\nGeração: " + geracao);
+    
     ArrayList gAnterior =  geracoes.get(geracao - 1);
 
     fishes.clear();
     for (int u = 0; u < numfish; u++) {
       Fish f = (Fish) gAnterior.get(u);
+      // possivel altereção: adcionar atributo Fit no objeto Fish, com isso não será preciso recalcular fit para exebir no ranking
       fishes.add(u, new Fish(0, 0, (3*PI)/2, (6+floor(random(0, 3))*20)/360.0, int(random(5) > 1)-random(0.1), f.getR(), f.getG(), f.getB(), f.getRB(), f.getGB(), f.getBB()));
+      
     }
+    
+    //recalcula o fit para exibir no ranking --
     for (int i = 0; i < fishes.size(); i++) {
       Fish f = (Fish) fishes.get(i);
+      
       f.setFit( ag.fitness(f, pondR, pondG, pondB));
-      println( f.getFit() +"% - "+ f.getR()+ "," +f.getG()+ ","+f.getB());
+      
     }
-
+    //ordenando peixes
     ag.ordenaPopulacao(fishes);
     println();
     for (int i = 0; i < fishes.size(); i++) {
       Fish f = (Fish) fishes.get(i);
-
+      //exibir peixes no ranking
       ranking.add(i, new Fish(98, 4, (3*PI)/2, (6+floor(random(0, 3))*20)/360.0, int(random(5) > 1)-random(0.1), f.getR(), f.getG(), f.getB(),  f.getRB(), f.getGB(), f.getBB()));
       Fish ind = (Fish) ranking.get(i);
       ind.setFit(f.getFit());
       println( ind.getFit() +"% - "+ ind.getR()+ "," +ind.getG()+ ","+ind.getB());
     }
   }
+}
+
+//botão pause/play do autoplay
+void pause() {
+
+
+  if ( cp5.getController("pause").getLabel().equals("pause")) {
+    //Pausa o autoplay
+    play = false;
+    cp5.getController("pause").setImage(loadImage("Play_50px.png"));
+    cp5.getController("pause").setLabel("play");
+  } else {
+    //Dá play o autoplay
+    play = true;
+    cp5.getController("pause").setImage(loadImage("Pause_50px.png"));
+    cp5.getController("pause").setLabel("pause");
+  }
+}
+
+
+
+void displayMessageBoxOKCancel(String abc){
+    switch(JOptionPane.showConfirmDialog(null,abc,"Aviso",JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE)) {
+      case JOptionPane.OK_OPTION:
+        println("yes!");
+        break;
+      default:
+        println("no!");
+    };
 }
