@@ -45,5 +45,11 @@ Versão da IDE: 3.5.3 (2019)
     
     2.2 (Conversor de RGB para LAB) <--  Extraido de: https://stackoverflow.com/questions/4593469/java-how-to-convert-rgb-color-to-cie-lab  --- Autor : Thanasis1101
 3. Fórum de Discussão Processing:
-    3.1 Calculando o Delta E (Diferença de Cor): https://discourse.processing.org/t/how-do-i-keep-the-fishes-in-the-pond/13430
+
+    3.1 (How do I keep the fishes in the pond?): 
+    
+    https://discourse.processing.org/t/how-do-i-keep-the-fishes-in-the-pond/13430
+    
+# Minicurso ministrado por:
+
 Emerson Santana, Leonardo Aquino e Lilian Mascarenhas
