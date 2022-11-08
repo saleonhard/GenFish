@@ -23,6 +23,9 @@
  A cada geração os indivíduos “evoluem” buscando uma melhor adaptação a cor do ambiente.
  Será possível definir: a cor do ambiente, tamanho da população,taxa de crossover,taxa de mutação,elitismo e número máximo de gerações.
  
+ ![image](https://user-images.githubusercontent.com/55332384/200700735-f2796dd7-9100-437b-a18c-ac469cbd59a7.png)
+
+ 
 # Sobre a Ferramenta Utilizada (IDE):
 ![image](https://user-images.githubusercontent.com/55332384/200576556-41603a74-7f4b-46a5-bfe2-ecf273f6a7ee.png)
 
