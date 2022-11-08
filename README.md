@@ -37,6 +37,14 @@ Versão da IDE: 3.5.3 (2019)
 # Materias de Apoio:
 1. Algoritmos Genéticos:
 
+   1.1 (3 Métodos de Otimização - PUC-RIO): https://www.maxwell.vrac.puc-rio.br/22934/22934_4.PDF
+   
+   1.2 (COMPUTAÇÃO EVOLUTIVA - Grupo de Pesquisas em Computação Evolutiva, Departamento de Informática
+Universidade Federal do Paraná): https://www.inf.ufpr.br/aurora/disciplinas/datamining/Ceapostila.pdf
+   
+   1.3 (Algoritmos Genéticos): http://www2.dc.ufscar.br/~heloisa/SN2007/AG.pdf
+   
+
 2. Calculando o Delta E (Diferença de Cor):
 
     2.2 (Conteúdo) http://zschuessler.github.io/DeltaE/learn/
