@@ -7,7 +7,7 @@
  * Atualizado em: 6‎ de ‎Novembro‎ de ‎2022
  *
  * Projeto iniciamente criado para SNCT 2019 do IFBA - Campus Feira de Santana. v 2.0
- * Atualizado para a 1º Edicção do BSI Integra (De 7 a 8 de Novembro de 2022) v 2.1
+ * Atualizado para a 1º Edição do BSI Integra (De 7 a 8 de Novembro de 2022) v 2.1
  *
  * Declaro que este código foi adaptado por mim de forma individual e que
  * o autor autor original está destacado bem como a fonte do

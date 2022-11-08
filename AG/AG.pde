@@ -5,7 +5,7 @@
  * Atualizado em: 6‎ de ‎Novembro‎ de ‎2022
  * 
  * Projeto iniciamente criado para SNCT 2019 do IFBA - Campus Feira de Santana. v 2.0
- * Atualizado para a 1º Edicção do BSI Integra (De 7 a 8 de Novembro de 2022) v 2.1
+ * Atualizado para a 1º Edição do BSI Integra (De 7 a 8 de Novembro de 2022) v 2.1
  *
  * Declaro que este código foi elaborado por mim de forma individual e
  * não contém nenhum trecho de código de outro colega ou de outro autor, 
@@ -40,7 +40,7 @@ class AlgGenetico {
   AlgGenetico(){
   
   }
-  
+  //construtor
   AlgGenetico(Double tm, Double tc, int  mg) {
 
     taxaDeCrossover = tc;
@@ -78,113 +78,13 @@ class AlgGenetico {
     elitismo = e;
   }
   
- //primeira geração
-  public void populacao(int tamPop) {
-
-    
-    for (int i = 0; i < tamPop; i++) {
-      fishes.add( new Fish(0, 0, (3*PI)/2, (6+floor(random(0, 3))*20)/360.0, int(random(6) > 1)-random(0.1), (int)random(0, 255), (int)random(0, 255), (int)random(0, 255), (int)random(0, 255), (int)random(0, 255), (int)random(0, 255)));
-    }
-  }
-  //gerando uma nova geração
-  public  ArrayList<Fish> novaGeracao(ArrayList<Fish> populacao, boolean elitismo) {
-    Random  r = new Random();
-    Fish aux;
-    Fish best = populacao.get(0);
-    Fish worst = populacao.get(int(numfish-1));
-    
-    //nova população do mesmo tamanho da antiga
-    ArrayList<Fish> filhos = new ArrayList(2);
-    ArrayList<Fish> novaPopulacao = new ArrayList();
-    ArrayList<Fish> pais = new ArrayList();
-    
-
-
-    //insere novos indivíduos na nova população, até atingir o tamanho máximo
-    while (novaPopulacao.size() != numfish) {
-      //seleciona os 2 pais por torneio
-      if ( numfish - novaPopulacao.size() == 1) { // caso a população tenha um numero impar: pega dois individuos (o melho e o pior) da população atual
-        
-        pais.add(best);
-        pais.add(worst);
-        
-      } else {
-        pais = selecaoTorneio(); // caso a população tenha um numero impar: pega dois individuos aleatorios da população atual
-      }
-
-     
-      //verifica a taxa de crossover, se sim realiza o crossover, se não, mantém os pais selecionados para a próxima geração
-      if (r.nextDouble() <= taxaDeCrossover) {
-        println("Fez crossover");
-        filhos = crossover(pais.get(0), pais.get(1));
-      } else {
-        filhos.add((pais.get(0)));
-        filhos.add(pais.get(1));
-      }
-
-      //adiciona os filhos na nova geração
-      if ( numfish - novaPopulacao.size() == 1) {
-        if (r.nextBoolean()) {
-          aux = filhos.get(0);
-          novaPopulacao.add(new Fish(0, 0, (3*PI)/2, (6+floor(random(0, 3))*20)/360.0, int(random(6) > 1)-random(0.1), aux.getR(), aux.getG(), aux.getB(),aux.getRB(), aux.getGB(), aux.getBB()));
-        } else {
-          aux = filhos.get(1);
-          novaPopulacao.add(new Fish(0, 0, (3*PI)/2, (6+floor(random(0, 3))*20)/360.0, int(random(6) > 1)-random(0.1), aux.getR(), aux.getG(), aux.getB(),aux.getRB(), aux.getGB(), aux.getBB()));
-        }
-      } else {
-
-        aux = filhos.get(0);
-        novaPopulacao.add(new Fish(0, 0, (3*PI)/2, (6+floor(random(0, 3))*20)/360.0, int(random(6) > 1)-random(0.1), aux.getR(), aux.getG(), aux.getB(),aux.getRB(), aux.getGB(), aux.getBB()));
-        aux = filhos.get(1);
-        novaPopulacao.add(new Fish(0, 0, (3*PI)/2, (6+floor(random(0, 3))*20)/360.0, int(random(6) > 1)-random(0.1), aux.getR(), aux.getG(), aux.getB(),aux.getRB(), aux.getGB(), aux.getBB()));
-      }
-
-      pais.clear();
-      filhos.clear();
-    }
-
-    // gera um valor aleatorio, caso ele seja menor que a taxa de mutação o idividuo sofrerar mutação
-    for (int i = 0; i< novaPopulacao.size(); i++) {
-      Double sofreMuta = r.nextDouble();
-      println("Mutação random :"+ sofreMuta);
-      
-      if (sofreMuta < taxaDeMutacao ) {
-         
-        mutacao(novaPopulacao.get(i));
-        println("Mutou");
-      }
-    } 
-
-
-    //se tiver elitismo, mantém o melhor indivíduo da geração atual - substituido o pior da nova geração<-- https://repositorio.ufu.br/bitstream/123456789/14632/1/NGLMalaquiasDISPRT.pdf pags 51-52 
-    if (elitismo) {
-      //calcular o fit
-      for (int i = 0; i < novaPopulacao.size(); i++) {
-      Fish f = (Fish) novaPopulacao.get(i);
-      f.setFit(fitness(f, pondR, pondG, pondB));
-      }
-      //ordena a nova população
-      ordenaPopulacao(novaPopulacao);
-      
-    
-      aux = novaPopulacao.get(0);
-      novaPopulacao.add(int(numfish - 1), best);
-      println("Elitismo aplicado");
-     
-      
-      //if (aux.getFit() < best.getFit()) {
-      //  novaPopulacao.add(0, best);
-      //  println("Elitismo aplicado");
-      //}
-    }
-
-    return novaPopulacao;
-  }
-
- 
+  
+  // Iniciar daqui
+  
+  
   
   //Calcula o fit de cada inviduo ultilizando a distancia entre as cores baseado no diagrama cie <-- 
-  Double fitness(Fish fish, int r, int g, int b) {
+  Double fitness(Fish fish, int r, int g, int b) { // A função recebe as cores do ambiente
     
     double labC[] = rgbToLab(fish.getR(), fish.getG(),fish.getB()); 
     double labB[] = rgbToLab(fish.getRB(), fish.getGB(),fish.getBB()); 
@@ -326,31 +226,42 @@ class AlgGenetico {
 
     ArrayList<Fish> candidatos = new ArrayList();
     ArrayList<Fish> pais = new ArrayList();
-
+    int numPais = 0;
     int index;
-    if (fishesCopia.size()>= 4) { // caso a população seja maior ou  igual a quatro: quatro individuos são selcionados aleatoriamente e add a lista de possiveis pais (candidatos) 
-      for (int i=0; i < 4; i++) {
-        index = (int)random(0, fishesCopia.size());
-        candidatos.add((Fish)fishesCopia.get(index));
-        fishesCopia.remove(index); // <-- remove os caditatos da lista principal 
-      }
-      ordenaPopulacao(candidatos);       // ordena os candidatos e paga os dois melhores dessa rodada <-- melhoria: pegar apenas um por vez
-      pais.add((Fish)candidatos.get(0)); // 
-      pais.add((Fish)candidatos.get(1)); // adiciona os dois melhores a lista de pais 
+    //while(numPais < 2 ){
+      
+      print("entrou");
+        if (fishesCopia.size()> 3) { // caso a população seja maior ou  igual a quatro: quatro individuos são selcionados aleatoriamente e add a lista de possiveis pais (candidatos) 
+          for (int i=0; i < 4; i++) {
+            index = (int)random(0, fishesCopia.size());
+            candidatos.add((Fish)fishesCopia.get(index));
+            fishesCopia.remove(index); // <-- remove os caditatos da lista principal 
+          }
+          ordenaPopulacao(candidatos);       // ordena os candidatos e paga os dois melhores dessa rodada <-- melhoria: pegar apenas um por vez
+          pais.add((Fish)candidatos.get(0)); // 
+          pais.add((Fish)candidatos.get(1)); // adiciona os dois melhores a lista de pais 
+          
+          //fishesCopia.add((Fish)candidatos.get(1));
+          fishesCopia.add((Fish)candidatos.get(2));
+          fishesCopia.add((Fish)candidatos.get(3));// adiciona outros dois a lista principal novamente (não foi a vez deles :( )
+          
+         // numPais ++;
+          
+        }
+        else {
+          // caso a população seja menor que quatro
+          println("sempre cai aqui" + fishesCopia.size() );
+          //ordenaPopulacao(fishesCopia);          // ordena (sem ordenação melhora miscigenação)
+          pais.add((Fish)fishesCopia.get(0));    // pega o melhor e adiciona a lista de pais 
+          fishesCopia.remove(0);
+          pais.add((Fish)fishesCopia.get(1));
+          fishesCopia.remove(1);
+          println("sempre cai aqui 2 " + fishesCopia.size() );
+        }
+    //}
 
-      fishesCopia.add((Fish)candidatos.get(2));
-      fishesCopia.add((Fish)candidatos.get(3));// adiciona outros dois a lista principal novamente (não foi a vez deles :( )
-    } else {                                 // caso a população seja menor que quatro: não recomendado 
-      ordenaPopulacao(fishesCopia);          // ordena
-      pais.add((Fish)fishesCopia.get(0));    // pega o melhor e adiciona a lista de pais 
-      fishesCopia.remove(0);
-      pais.add((Fish)fishesCopia.get(0));
-      fishesCopia.remove(0);
-    }
 
-
-
-    return pais; //retona os pais da vez
+    return pais; //retona os pais da vez (coitados)
   }
 
 
@@ -497,7 +408,129 @@ class AlgGenetico {
     }
   }
   
+    
   
+  
+  
+  
+  
+  
+  
+ //primeira geração
+  public void populacao(int tamPop) {
+
+    
+    for (int i = 0; i < tamPop; i++) {
+      fishes.add( new Fish(0, 0, (3*PI)/2, (6+floor(random(0, 3))*20)/360.0, int(random(6) > 1)-random(0.1), (int)random(0, 255), (int)random(0, 255), (int)random(0, 255), (int)random(0, 255), (int)random(0, 255), (int)random(0, 255)));
+    }
+  }
+  //criando uma nova geração
+  public  ArrayList<Fish> novaGeracao(ArrayList<Fish> populacao, boolean elitismo) {
+    Random  r = new Random();
+    Fish aux;
+    Fish best = populacao.get(0);
+    Fish worst = populacao.get(int(numfish-1));
+    
+    //nova população do mesmo tamanho da antiga
+    ArrayList<Fish> filhos = new ArrayList(2);
+    ArrayList<Fish> novaPopulacao = new ArrayList();
+    ArrayList<Fish> pais = new ArrayList();
+    
+    //println("Individuos : "+ populacao.size());
+
+
+    //insere novos indivíduos na nova população, até atingir o tamanho máximo
+    while (novaPopulacao.size() != numfish) {
+      //seleciona os 2 pais por torneio
+      if ( numfish - novaPopulacao.size() == 1) { // caso a população tenha um numero impar: pega dois individuos (o melhor e o pior) da população atual
+      
+      
+        //println("Individuos restantes: "+ fishesCopia.size());
+        ///println("Individuos : "+ populacao.size());
+        
+        //int index = (int)random(0, populacao.size());
+        
+        pais.add(best);
+        pais.add(worst); //<-- Uma opção: pegar o individuo restante e outro aleatoriamente.
+        
+      } else {
+        pais = selecaoTorneio(); // caso a população tenha um numero impar: pega dois individuos aleatorios da população atual
+        
+      }
+
+     
+      //verifica a taxa de crossover, se sim realiza o crossover, se não, mantém os pais selecionados para a próxima geração
+      if (r.nextDouble() <= taxaDeCrossover) {
+        println("Fez crossover :" + pais.get(0).getFit());
+        println("Fez crossover :" + pais.get(1).getFit());
+        
+        filhos = crossover(pais.get(0), pais.get(1));
+      } else {
+        filhos.add((pais.get(0)));
+        filhos.add(pais.get(1));
+      }
+
+      //adiciona os filhos na nova geração
+      if ( numfish - novaPopulacao.size() == 1) {
+        if (r.nextBoolean()) {
+          aux = filhos.get(0);
+          novaPopulacao.add(new Fish(0, 0, (3*PI)/2, (6+floor(random(0, 3))*20)/360.0, int(random(6) > 1)-random(0.1), aux.getR(), aux.getG(), aux.getB(),aux.getRB(), aux.getGB(), aux.getBB()));
+        } else {
+          aux = filhos.get(1);
+          novaPopulacao.add(new Fish(0, 0, (3*PI)/2, (6+floor(random(0, 3))*20)/360.0, int(random(6) > 1)-random(0.1), aux.getR(), aux.getG(), aux.getB(),aux.getRB(), aux.getGB(), aux.getBB()));
+        }
+      } else {
+
+        aux = filhos.get(0);
+        novaPopulacao.add(new Fish(0, 0, (3*PI)/2, (6+floor(random(0, 3))*20)/360.0, int(random(6) > 1)-random(0.1), aux.getR(), aux.getG(), aux.getB(),aux.getRB(), aux.getGB(), aux.getBB()));
+        aux = filhos.get(1);
+        novaPopulacao.add(new Fish(0, 0, (3*PI)/2, (6+floor(random(0, 3))*20)/360.0, int(random(6) > 1)-random(0.1), aux.getR(), aux.getG(), aux.getB(),aux.getRB(), aux.getGB(), aux.getBB()));
+      }
+
+      pais.clear();
+      filhos.clear();
+    }
+
+    // gera um valor aleatorio, caso ele seja menor que a taxa de mutação o idividuo sofrerar mutação
+    for (int i = 0; i< novaPopulacao.size(); i++) {
+      Double sofreMuta = r.nextDouble();
+      println("Mutação random :"+ sofreMuta);
+      
+      if (sofreMuta < taxaDeMutacao ) {
+         
+        mutacao(novaPopulacao.get(i));
+        println("Mutou");
+      }
+    } 
+
+
+    //se tiver elitismo, mantém o melhor indivíduo da geração atual - substituido o pior da nova geração<-- https://repositorio.ufu.br/bitstream/123456789/14632/1/NGLMalaquiasDISPRT.pdf pags 51-52 
+    if (elitismo) {
+      //calcular o fit
+      for (int i = 0; i < novaPopulacao.size(); i++) {
+      Fish f = (Fish) novaPopulacao.get(i);
+      f.setFit(fitness(f, pondR, pondG, pondB));
+      }
+      //ordena a nova população
+      ordenaPopulacao(novaPopulacao);
+      
+    
+      aux = novaPopulacao.get(0);
+      novaPopulacao.add(int(numfish - 1), best);
+      println("Elitismo aplicado");
+     
+      
+      //if (aux.getFit() < best.getFit()) {
+      //  novaPopulacao.add(0, best);
+      //  println("Elitismo aplicado");
+      //}
+    }
+
+    return novaPopulacao;
+  }
+
+ 
+
   
   
   //----OS MÉTODOS/FUNCÕES ABAIXO FORAM ATUALIZADOS----///

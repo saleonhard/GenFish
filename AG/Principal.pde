@@ -6,7 +6,7 @@
  *
  *
  * Projeto iniciamente criado para SNCT 2019 do IFBA - Campus Feira de Santana. v 2.0
- * Atualizado para a 1º Edicção do BSI Integra (De 7 a 8 de Novembro de 2022) v 2.1
+ * Atualizado para a 1º Edição do BSI Integra (De 7 a 8 de Novembro de 2022) v 2.1
  *
  * Declaro que este código foi elaborado por mim de forma individual e
  * não contém nenhum trecho de código de outro colega ou de outro autor, 
@@ -52,11 +52,11 @@ Fish melhor;
 Fish aux;
 
 float t;
-ArrayList<ArrayList<Fish>> geracoes = new ArrayList<ArrayList<Fish>>();
-ArrayList<Fish> selecionados = new ArrayList();
-ArrayList fishesCopia;
-ArrayList fishes;
-ArrayList ranking;
+ArrayList<ArrayList<Fish>> geracoes = new ArrayList<ArrayList<Fish>>(); //<-- Guarda todas as gerações permitindo navegar entre elas
+ArrayList<Fish> selecionados = new ArrayList(); //<-- Pais selecionas apos o torneio
+ArrayList fishesCopia; //<-- Copia da geração atual (uso: manipulação no torneio)
+ArrayList fishes; //<-- Geração atual 
+ArrayList ranking; // <-- Adivinha? kkk
 
 
 float numfish;
@@ -333,8 +333,8 @@ void iniciarGUI() {
   cp5.addTextlabel("autply", "AUTOPLAY:", 177, 524).setFont(font);
   cp5.addTextlabel("vautply", "VELOCIDADE DO AUTOPLAY:", 1, 550).setFont(font).setVisible(false);
   
-  cp5.addTextlabel("copyright", "Desenvolvido por theBug", 925, 618).setFont(font3);
-  cp5.addTextlabel("loc", "(IFBA - SNCT 2019)", 970, 638).setFont(font4);
+  cp5.addTextlabel("copyright", "Desenvolvido por: \nLeonardo Aquino", 946, 600).setFont(font3);
+  cp5.addTextlabel("loc", "(IFBA - BSI INTEGRA 2022)", 940, 638).setFont(font4);
 
   cp5.addColorWheel("c", 40, 55, 245).setRGB(color(205, 254, 628)).setLabelVisible(false);
 
@@ -506,7 +506,7 @@ void INICIAR() {
     
   }
   
-  //oredena de acordo com o fit
+  //ordena de acordo com o fit
   ag.ordenaPopulacao(fishes);
   println();
   println("-- PRIMEIRA GERAÇÃO --");
@@ -523,7 +523,7 @@ void INICIAR() {
   //adiciona a primeira geração a lista de gerações -- com essa lista é possivel navegar entre as gerações 
   ArrayList<Fish> copia = new ArrayList(fishes);
   geracoes.add(copia);  
-  fishesCopia = fishes;
+  fishesCopia = fishes; //<-- atualiza a copia da população atual
   geracao = geracao +1;
   geracaoAtual = geracaoAtual +1;
   
@@ -630,7 +630,7 @@ void prxGer() {
     println("----------------------\nGeração: " +geracao);
     if (geracao == geracaoAtual) {
       
-      //craindo uma nova nova geração
+      //criando uma nova nova geração
       ArrayList ng =  ag.novaGeracao(fishesCopia, ag.getElitismo());
 
 
