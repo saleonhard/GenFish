@@ -40,10 +40,19 @@ Versão da IDE: 3.5.3 (2019)
 2. Calculando o Delta E (Diferença de Cor):
 
     2.2 (Conteúdo) http://zschuessler.github.io/DeltaE/learn/
+    
+    ![image](https://user-images.githubusercontent.com/55332384/200580651-0f93a5e6-fa1b-422d-bae4-fbf27bdf7861.png)
+
  
     2.1 (Código Fonte) <-- Extraido de: https://github.com/wuchubuzai/OpenIMAJ/blob/master/image/image-processing/src/main/java/org/openimaj/image/analysis/colour/CIEDE2000.java  --- Autor : Jonathon Hare (jsh2@ecs.soton.ac.uk)
     
-    2.2 (Conversor de RGB para LAB) <--  Extraido de: https://stackoverflow.com/questions/4593469/java-how-to-convert-rgb-color-to-cie-lab  --- Autor : Thanasis1101
+    2.2 (Sobre o LAB) <-- Extraido de: https://www.linshangtech.com/tech/understand-color-comparison-data-on-colorimeters-tech1449.html
+    
+    
+    ![image](https://user-images.githubusercontent.com/55332384/200580332-aa667434-0f62-4628-ae20-264308093033.png)
+    
+    2.3 (Conversor de RGB para LAB) <--  Extraido de: https://stackoverflow.com/questions/4593469/java-how-to-convert-rgb-color-to-cie-lab  --- Autor : Thanasis1101
+
 3. Fórum de Discussão Processing:
 
     3.1 (How do I keep the fishes in the pond?): 
@@ -53,3 +62,7 @@ Versão da IDE: 3.5.3 (2019)
 # Minicurso ministrado por:
 
 Emerson Santana, Leonardo Aquino e Lilian Mascarenhas
+
+# Desenvolvido  por:
+
+Leonardo Aquino
