@@ -17,6 +17,10 @@
  * A cada geração os indivíduos “evoluem” buscando uma melhor adaptação a cor do ambiente.
  * Será possível definir: a cor do ambiente, tamanho da população,taxa de crossover,taxa de mutação,elitismo e número máximo de gerações.
  *
+ * Sobre o Arquivo: Modela os aspectos físicos dos peixes. (A classe Fish)
+ *
+ *
+ *
  */
 
 ///--- ABAIXO COMENTARIOS DO AUTOR DO CÓDIGO ---

@@ -19,6 +19,10 @@
  * A cada geração os indivíduos “evoluem” buscando uma melhor adaptação a cor do ambiente.
  * Será possível definir: a cor do ambiente, tamanho da população,taxa de crossover,taxa de mutação,elitismo e número máximo de gerações.
  *
+ *
+ * Sobre o Arquivo: Implementa os conceitos de Algoritmos Genéticos. (Classe AlgGenetico) 
+ *
+ *
  */
  
 import java.util.Random;
@@ -610,7 +614,9 @@ class AlgGenetico {
   //}
   
   
-  //---CALCULA O FITNESS--- VERSÃO ANTIGA FEITA POR MIM ////
+  //---CALCULA O FITNESS--- ESTE METODO DE CALCULAR A DIFERENÇA ENTRE AS CORES FOI DESENVOLVIDO POR MIM, MAS POR ALGUM MOTIVO 
+  // COM A AMBIENTE BRANCO (255,255,255) A ADPTAÇÃO DOS PEIXES TORNA-SE POSSIVEL EM POUQUÍSSIMAS INTERAÇÕES. OU SEJA ESTE É TENDENCIOSO.
+  // (EXECUTÁVEL QUE ULTILIZA ESSE METODO DISPONIVEL NA PASTA "GenFish v2.0"  ////
   
   //Double fitness(Fish fish, int r, int g, int b) {
   //  Float   aR  = calAptidao(fish.getR(), r);

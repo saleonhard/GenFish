@@ -19,6 +19,10 @@
  * A representação visual simula a evolução de um conjunto de peixes (por geração).
  * A cada geração os indivíduos “evoluem” buscando uma melhor adaptação a cor do ambiente.
  * Será possível definir: a cor do ambiente, tamanho da população,taxa de crossover,taxa de mutação,elitismo e número máximo de gerações.
+ * 
+ *
+ *
+ * Sobre o Arquivo: Cria a interface grafica e instacia as demais Classes.
  *
  */
  
