@@ -1,3 +1,5 @@
+[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fsaleonhard%2FGenFish&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
+
 # GenFish v2.1
 
 ![image](https://user-images.githubusercontent.com/55332384/200191165-892e456d-0b9a-4bd5-8d27-efbfc49efc5e.png)
